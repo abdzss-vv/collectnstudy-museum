@@ -6,6 +6,7 @@ import {
   useRouter,
   HeadContent,
   Scripts,
+  useLocation,
   type ErrorComponentProps,
 } from "@tanstack/react-router";
 import { useEffect, type ReactNode } from "react";
@@ -120,16 +121,17 @@ function RootShell({ children }: { children: ReactNode }) {
 
 function RootComponent() {
   const { queryClient } = Route.useRouteContext();
+  const immersive = useLocation({ select: (location) => ["/", "/museum", "/study"].includes(location.pathname) });
 
   return (
     <QueryClientProvider client={queryClient}>
-      <AppNav />
-      <main className="mx-auto max-w-6xl px-4 py-8 md:py-12">
+      {!immersive && <AppNav />}
+      <main className={immersive ? "museum-root" : "mx-auto max-w-6xl px-4 py-8 md:py-12"}>
         <Outlet />
       </main>
-      <footer className="border-t border-border py-6 text-center text-xs text-muted-foreground">
+      {!immersive && <footer className="border-t border-border py-6 text-center text-xs text-muted-foreground">
         Prototype · Paintings from Wikimedia Commons (public domain)
-      </footer>
+      </footer>}
     </QueryClientProvider>
   );
 }
