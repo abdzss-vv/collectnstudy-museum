@@ -3,6 +3,9 @@ import type { Collectible, Subject, Test, SubjectId } from "./types";
 import carImg from "@/assets/item-car.jpg";
 import foxImg from "@/assets/item-fox.jpg";
 import amphoraImg from "@/assets/item-amphora.jpg";
+import starryAsset from "@/assets/starry-night.jpg.asset.json";
+import waveAsset from "@/assets/great-wave.jpg.asset.json";
+import monaAsset from "@/assets/mona-lisa.jpg.asset.json";
 
 export const subjects: Subject[] = [
   { id: "history", name: "History" },
@@ -14,17 +17,13 @@ export const subjects: Subject[] = [
 
 export const subjectName = (id: SubjectId) => subjects.find((s) => s.id === id)?.name ?? id;
 
-// Public-domain artworks served from Wikimedia Commons.
-const commons = (file: string) =>
-  `https://commons.wikimedia.org/wiki/Special:FilePath/${encodeURIComponent(file)}?width=600`;
-
 export const sampleCollectibles: Collectible[] = [
   {
     id: "starry-night",
     name: "The Starry Night",
     category: "Painting",
     rarity: "Legendary",
-    image: commons("Van Gogh - Starry Night - Google Art Project.jpg"),
+    image: starryAsset.url,
     value: 1200,
     subjectId: "physics",
     note: "Vincent van Gogh, 1889 · Public domain",
@@ -34,7 +33,7 @@ export const sampleCollectibles: Collectible[] = [
     name: "The Great Wave off Kanagawa",
     category: "Painting",
     rarity: "Rare",
-    image: commons("Tsunami by hokusai 19th century.jpg"),
+    image: waveAsset.url,
     value: 800,
     subjectId: "literature",
     note: "Katsushika Hokusai, c. 1831 · Public domain",
@@ -91,3 +90,14 @@ export const sampleStats = {
 };
 
 export const durations = [15, 25, 45, 60];
+
+export const galleryPortrait: Collectible = {
+  id: "mona-lisa", name: "Mona Lisa", category: "Painting", rarity: "Legendary",
+  image: monaAsset.url, value: 1200, subjectId: "history",
+  note: "Leonardo da Vinci, c. 1503–1519 · Public domain · Demonstration",
+};
+export const museumDisplays = [
+  { item: sampleCollectibles[0], position: "left" },
+  { item: galleryPortrait, position: "centre" },
+  { item: sampleCollectibles[1], position: "right" },
+] as const;
