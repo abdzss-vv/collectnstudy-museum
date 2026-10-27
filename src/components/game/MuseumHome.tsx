@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { BookOpen, Library, CalendarDays, Sprout, Settings, Coins, ArrowRight, Sun, VolumeX } from 'lucide-react';
 import museumInterior from '@/assets/museum-interior.jpg';
 import { museumDisplays, sampleCollectibles, sampleStats, subjectName } from '@/data/sample';
@@ -17,8 +17,13 @@ export function MuseumHome() {
   const [selected, setSelected] = useState<Collectible | null>(null);
   const [session, setSession] = useState<StudySession | null>(null);
   const [motion, setMotion] = useState(true);
+  const galleryRef = useRef<HTMLDivElement>(null);
+  useEffect(() => {
+    const gallery = galleryRef.current;
+    if (gallery) gallery.scrollLeft = (gallery.scrollWidth - gallery.clientWidth) / 2;
+  }, []);
   return <div className={`museum-home ${motion ? '' : 'museum-still'}`}>
-    <div className="gallery-viewport"><div className="gallery-scene">
+    <div ref={galleryRef} className="gallery-viewport" tabIndex={0} aria-label="Museum gallery"><div className="gallery-scene">
       <img src={museumInterior} alt="Sunlit museum with cream walls, oak floors, plants and ornate golden frames" className="gallery-background" width={1920} height={1088} />
       {museumDisplays.map(({ item, position }) => item && <GameButton key={item.id} variant="ghost" className={`gallery-art gallery-art-${position}`} aria-label={`Inspect ${item.name}`} title={item.name} onClick={() => setSelected(item)}><img src={item.image} alt={item.name} width={600} height={400} /></GameButton>)}
       <GameButton variant="ghost" className="gallery-art gallery-amphora" aria-label="Inspect Black-Figure Amphora" title="Black-Figure Amphora" onClick={() => setSelected(sampleCollectibles[2] ?? null)} />

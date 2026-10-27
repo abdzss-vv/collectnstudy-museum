@@ -80,6 +80,7 @@ export function Select({
     <label className="flex flex-col gap-1 text-sm">
       <span className="font-semibold text-muted-foreground">{label}</span>
       <select
+        aria-label={label}
         value={value}
         onChange={(e) => onChange(e.target.value)}
         className="rounded-md border border-input bg-card px-3 py-2 text-foreground focus:outline-none focus:ring-2 focus:ring-ring"
