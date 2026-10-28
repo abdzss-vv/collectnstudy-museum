@@ -6,10 +6,15 @@ import type { SubjectId } from '@/data/types';
 import { pauseSession, resumeSession, tickSession, type StudySession } from '@/lib/study-session';
 import { GameButton } from './ui';
 import { MuseumPanel } from './MuseumPanel';
+import { useRewards } from './RewardsProvider';
 
 export function FocusMode({ initial, onExit }: { initial: StudySession; onExit: () => void }) {
   const [session, setSession] = useState(initial);
   const [confirmExit, setConfirmExit] = useState(false);
+  const { complete } = useRewards();
+  useEffect(() => {
+    if (session.status === 'done') { complete(session); onExit(); }
+  }, [session.status, complete, onExit, session]);
   useEffect(() => {
     if (session.status !== 'running') return;
     const id = window.setInterval(() => setSession((current) => tickSession(current, Date.now())), 250);

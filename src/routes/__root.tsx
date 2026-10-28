@@ -14,6 +14,8 @@ import { useEffect, type ReactNode } from "react";
 import appCss from "../styles.css?url";
 import { reportLovableError } from "../lib/lovable-error-reporting";
 import { AppNav } from "../components/game/AppNav";
+import { RewardsProvider } from "../components/game/RewardsProvider";
+import { RewardReveal } from "../components/game/RewardReveal";
 
 function NotFoundComponent() {
   return (
@@ -125,6 +127,7 @@ function RootComponent() {
 
   return (
     <QueryClientProvider client={queryClient}>
+      <RewardsProvider>
       {!immersive && <AppNav />}
       <main className={immersive ? "museum-root" : "mx-auto max-w-6xl px-4 py-8 md:py-12"}>
         <Outlet />
@@ -132,6 +135,8 @@ function RootComponent() {
       {!immersive && <footer className="border-t border-border py-6 text-center text-xs text-muted-foreground">
         Prototype · Paintings from Wikimedia Commons (public domain)
       </footer>}
+      <RewardReveal />
+      </RewardsProvider>
     </QueryClientProvider>
   );
 }

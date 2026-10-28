@@ -27,7 +27,7 @@ export function CollectibleCard({ item, compact }: { item: Collectible; compact?
             <p className="text-xs text-muted-foreground">{item.note}</p>
             <div className="mt-auto flex items-center justify-between pt-2 text-sm">
               <span className="text-muted-foreground">Studied: {subjectName(item.subjectId)}</span>
-              <span className="font-semibold text-wood">{item.value} ✦</span>
+              {!item.earnedSessionId && <span className="font-semibold text-wood">{item.value} ✦</span>}
             </div>
           </>
         )}

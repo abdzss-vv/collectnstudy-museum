@@ -15,3 +15,5 @@
 - Tests list persists in localStorage via `src/lib/tests-store.ts` (no backend in prototype) — scope excludes backend.
 - MuseumHome is the shared immersive experience for home and museum; standalone collection and tests routes reuse their panel content — prevents competing screen implementations while preserving public URLs.
 - FocusMode and StudySelector share pure timestamp-based session logic in study-session — keeps countdown accurate after inactive tabs and makes pause/completion testable.
+- RewardsProvider owns pending and collected local rewards; pure rewards-store transitions deduplicate by session ID, and the global reveal survives navigation — keeps natural completion, confirmation and refresh recovery consistent across study entry points.
+- Artwork reveal uses rectified stills from the supplied video with a CSS two-sided flip — preserves the original design without an opaque video background and allows interactive inspection.

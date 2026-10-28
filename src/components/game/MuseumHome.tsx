@@ -10,9 +10,11 @@ import { MuseumPanel } from './MuseumPanel';
 import { FocusMode } from './FocusMode';
 import { StudySelector } from './StudySelector';
 import { GameButton, SampleBadge } from './ui';
+import { useRewards } from './RewardsProvider';
 
 type Panel = 'collection' | 'tests' | 'progress' | 'settings' | 'study' | null;
 export function MuseumHome() {
+  const { state: rewards } = useRewards();
   const [panel, setPanel] = useState<Panel>(null);
   const [selected, setSelected] = useState<Collectible | null>(null);
   const [session, setSession] = useState<StudySession | null>(null);
@@ -44,7 +46,7 @@ export function MuseumHome() {
       {panel === 'collection' && <CollectionContent />}
       {panel === 'tests' && <TestsContent />}
       {panel === 'study' && <StudySelector onStart={(value) => { setPanel(null); setSession(value); }} />}
-      {panel === 'progress' && <><Sprout className="text-primary" size={30} /><h2 className="mt-4 text-2xl">Every museum starts small.</h2><dl className="journal-stats"><div><dt>Earned collectibles</dt><dd>0</dd></div><div><dt>Saved study sessions</dt><dd>0</dd></div><div><dt>Gallery</dt><dd>Main hall</dd></div></dl><SampleBadge>Prototype</SampleBadge><p className="mt-4 text-sm text-muted-foreground">Session history, visitors, expansions and rewards are not active yet.</p></>}
+      {panel === 'progress' && <><Sprout className="text-primary" size={30} /><h2 className="mt-4 text-2xl">Every museum starts small.</h2><dl className="journal-stats"><div><dt>Earned collectibles</dt><dd>{rewards.collected.length}</dd></div><div><dt>Gallery</dt><dd>Main hall</dd></div></dl><SampleBadge>Prototype</SampleBadge><p className="mt-4 text-sm text-muted-foreground">Session history, visitors and expansions are not active yet.</p></>}
       {panel === 'settings' && <><label className="flex items-center justify-between gap-4 border-b border-border py-4"><span>Ambient movement</span><input type="checkbox" checked={motion} onChange={(e) => setMotion(e.target.checked)} className="h-5 w-5 accent-primary" /></label><p className="mt-5 flex items-center gap-2 text-sm text-muted-foreground"><VolumeX size={17} /> Sound is not included in this prototype.</p><p className="mt-4 text-xs text-muted-foreground">Preferences apply until this page is refreshed.</p></>}
     </MuseumPanel>
     <MuseumPanel open={selected !== null} onClose={() => setSelected(null)} title={selected?.name ?? 'Display detail'} description="Details of this demonstration collectible." compact>
