@@ -80,6 +80,7 @@
   --scrim: oklch(0.22 0.025 145 / 0.35);
   --museum-glass: oklch(0.985 0.012 85 / 0.94);
   --museum-shadow: 0 8px 30px oklch(0.22 0.035 50 / 0.18);
+  --reward-veil: oklch(0.965 0.018 85 / 0.91);
 }
 
 @layer base {
@@ -158,6 +159,26 @@
 .focus-progress::-webkit-progress-bar { background: var(--border); }
 .focus-progress::-webkit-progress-value { background: var(--primary); }
 .focus-progress::-moz-progress-bar { background: var(--primary); }
+.duration-slider { width: 100%; height: 32px; accent-color: var(--primary); cursor: pointer; }
+.reward-screen { position: fixed; inset: 0; z-index: 70; overflow-y: auto; background: var(--background); }
+.reward-screen::after { content: ''; position: absolute; inset: 0; min-height: 100%; background: var(--reward-veil); }
+.reward-content { position: relative; z-index: 1; min-height: 100svh; max-width: 660px; margin: auto; padding: 36px 16px; text-align: center; }
+.reward-box { display: block; width: min(400px, 90%); aspect-ratio: 1; padding: 0; margin: 24px auto; background: transparent; }
+.reward-box:hover { background: transparent; }
+.reward-box img { width: 100%; height: 100%; object-fit: contain; }
+.reward-box-opening { animation: box-open 1s ease-in-out forwards; }
+.artwork-card { width: min(390px, 100%); aspect-ratio: 480 / 680; margin: 24px auto 16px; perspective: 1400px; }
+.artwork-card-inner { position: relative; width: 100%; height: 100%; transform-style: preserve-3d; transition: transform 750ms ease-in-out; }
+.artwork-card-flipped .artwork-card-inner { transform: rotateY(180deg); }
+.artwork-card-face { position: absolute; inset: 0; backface-visibility: hidden; overflow: hidden; border-radius: 28px; }
+.artwork-card-face img { display: block; width: 100%; height: 100%; }
+.artwork-card-back { transform: rotateY(180deg); }
+@keyframes box-open { 20% { transform: rotate(-4deg); } 45% { transform: rotate(4deg) scale(1.04); } 70% { transform: translateY(-20px); opacity: 1; } 100% { transform: translateY(-60px) scale(.85); opacity: 0; } }
+@media (max-width: 700px) {
+  .reward-content { padding: 24px 16px; }
+  .reward-content h1 { font-size: 30px; }
+  .artwork-card { width: min(390px, 100%); }
+}
 @keyframes panel-arrive { from { opacity: 0; } to { opacity: 1; } }
 @keyframes gallery-breathe { 50% { filter: brightness(1.035); } }
 .museum-home:not(.museum-still) .gallery-background { animation: gallery-breathe 12s ease-in-out infinite; }

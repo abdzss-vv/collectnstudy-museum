@@ -1,16 +1,27 @@
 import { useState } from 'react';
 import { BookOpen, Clock, ArrowRight } from 'lucide-react';
-import { subjects, durations } from '@/data/sample';
+import { subjects } from '@/data/sample';
 import { GameButton, Select } from './ui';
-import { startSession, type StudySession } from '@/lib/study-session';
+import { startSession, validDuration, type StudySession } from '@/lib/study-session';
 
 export function StudySelector({ onStart }: { onStart: (session: StudySession) => void }) {
   const [subject, setSubject] = useState('history');
   const [minutes, setMinutes] = useState(25);
+  const [input, setInput] = useState('25');
+  const valid = validDuration(Number(input)) && input.trim() !== '';
+  const update = (value: string) => {
+    setInput(value);
+    if (validDuration(Number(value))) setMinutes(Number(value));
+  };
   return <div className="space-y-6">
     <BookOpen className="text-primary" size={28} />
     <Select label="Subject" value={subject} onChange={setSubject} options={subjects.map((s) => ({ value: s.id, label: s.name }))} />
-    <fieldset><legend className="mb-3 flex items-center gap-2 text-sm font-semibold text-muted-foreground"><Clock size={15} /> Session duration</legend><div className="grid grid-cols-4 gap-2">{durations.map((duration) => <GameButton key={duration} variant={minutes === duration ? 'primary' : 'outline'} aria-pressed={minutes === duration} className="px-2" onClick={() => setMinutes(duration)}>{duration}m</GameButton>)}</div></fieldset>
-    <GameButton className="w-full py-3" onClick={() => onStart(startSession(subject, minutes, Date.now()))}>Enter the reading room <ArrowRight size={17} /></GameButton>
+    <fieldset><legend className="mb-3 flex items-center gap-2 text-sm font-semibold text-muted-foreground"><Clock size={15} /> Session duration</legend>
+      <div className="mb-4 flex items-center justify-between gap-4"><output className="font-serif text-4xl text-primary" aria-live="polite">{minutes} <span className="text-xl">minutes</span></output><label className="text-sm text-muted-foreground">Exact minutes<input aria-label="Exact minutes" type="number" min={1} max={180} step={1} value={input} onChange={(e) => update(e.target.value)} aria-invalid={!valid} className="mt-1 block w-24 rounded-md border border-input bg-card p-2 text-foreground" /></label></div>
+      <input className="duration-slider" aria-label="Study duration" type="range" min={1} max={180} step={1} value={minutes} onChange={(e) => update(e.target.value)} />
+      <div className="mt-2 flex justify-between text-xs text-muted-foreground"><span>1 minute</span><span>180 minutes</span></div>
+      {!valid && <p role="alert" className="mt-2 text-sm text-destructive">Choose a whole number from 1 to 180 minutes.</p>}
+    </fieldset>
+    <GameButton disabled={!valid} className="w-full py-3" onClick={() => onStart(startSession(subject, minutes, Date.now()))}>Enter the reading room <ArrowRight size={17} /></GameButton>
   </div>;
 }
