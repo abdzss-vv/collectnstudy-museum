@@ -12,7 +12,7 @@ describe('Study duration controls', () => {
     fireEvent.change(input, { target: { value: '180' } });
     expect((slider as HTMLInputElement).value).toBe('180');
     fireEvent.click(screen.getByRole('button', { name: /Enter the reading room/ }));
-    expect(start.mock.calls[0][0].remaining).toBe(10800);
+    expect(start.mock.calls[0]?.[0]?.remaining).toBe(10800);
   });
   it('prevents out-of-range, blank and fractional starts while allowing one minute', () => {
     render(<StudySelector onStart={vi.fn()} />);

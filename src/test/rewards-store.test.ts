@@ -7,8 +7,8 @@ describe('Study rewards', () => {
   it('grants the deterministic Mona Lisa for natural completion with the studied subject', () => {
     const state = completeReward(emptyRewards, tickSession(startSession('biology', 1, 1000), 61000), now);
     expect(state.pending).toHaveLength(1);
-    expect(state.pending[0].name).toBe('Mona Lisa');
-    expect(state.pending[0].subjectId).toBe('biology');
+    expect(state.pending[0]?.name).toBe('Mona Lisa');
+    expect(state.pending[0]?.subjectId).toBe('biology');
     expect(state.collected).toHaveLength(0);
   });
   it('does not grant unfinished or paused sessions', () => {
@@ -30,7 +30,7 @@ describe('Study rewards', () => {
     const session = tickSession(startSession('literature', 1, 1000), 61000);
     const pending = completeReward(emptyRewards, session, now);
     const restored = parseRewards(JSON.stringify(pending));
-    expect(restored.pending[0].subjectId).toBe('literature');
+    expect(restored.pending[0]?.subjectId).toBe('literature');
     const confirmed = confirmReward(restored, session.id);
     expect(parseRewards(JSON.stringify(confirmed)).collected).toEqual(confirmed.collected);
     expect(parseRewards(JSON.stringify({ pending: pending.pending, collected: confirmed.collected })).pending).toHaveLength(0);
