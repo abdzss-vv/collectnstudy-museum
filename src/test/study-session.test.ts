@@ -1,7 +1,21 @@
 import { describe, expect, it } from 'vitest';
-import { startSession, tickSession, pauseSession, resumeSession } from '@/lib/study-session';
+import { startSession, tickSession, pauseSession, resumeSession, validDuration } from '@/lib/study-session';
 
 describe('Study session', () => {
+  it('supports every whole-minute duration from 1 through 180', () => {
+    for (let minutes = 1; minutes <= 180; minutes++) {
+      expect(validDuration(minutes)).toBe(true);
+      expect(startSession('history', minutes, 1000).remaining).toBe(minutes * 60);
+    }
+  });
+  it.each([0, 181, -1, 1.5, NaN, Infinity])('rejects invalid duration %s', (minutes) => {
+    expect(validDuration(minutes)).toBe(false);
+    expect(() => startSession('history', minutes, 1000)).toThrow();
+  });
+  it('keeps the target duration fixed during pause and resume', () => {
+    const session = startSession('history', 180, 1000);
+    expect(resumeSession(pauseSession(session, 61000), 90000).total).toBe(10800);
+  });
   it('starts with the selected subject and duration', () => {
     const session = startSession('biology', 15, 1000);
     expect(session.subject).toBe('biology');
