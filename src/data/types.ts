@@ -19,6 +19,8 @@ export interface Collectible {
   value: number; // estimated in-game value (coins)
   subjectId: SubjectId;
   note?: string; // credit / description
+  earnedSessionId?: string;
+  earnedAt?: string;
 }
 
 export interface Test {
