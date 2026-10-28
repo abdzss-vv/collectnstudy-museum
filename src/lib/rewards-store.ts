@@ -1,0 +1,36 @@
+import type { StudySession } from './study-session';
+import type { Collectible, SubjectId } from '@/data/types';
+import { subjects } from '@/data/sample';
+import { makeReward } from '@/data/rewards';
+
+export const REWARDS_KEY = 'collectnstudy-rewards-v1';
+export interface RewardsState { pending: Collectible[]; collected: Collectible[] }
+export const emptyRewards: RewardsState = { pending: [], collected: [] };
+export function completeReward(state: RewardsState, session: StudySession, now: string): RewardsState {
+  if (session.status !== 'done' || session.remaining !== 0 || !subjects.some((s) => s.id === session.subject)) return state;
+  if ([...state.pending, ...state.collected].some((r) => r.earnedSessionId === session.id)) return state;
+  return { ...state, pending: [...state.pending, makeReward(session.id, session.subject as SubjectId, now)] };
+}
+export function confirmReward(state: RewardsState, sessionId: string): RewardsState {
+  const reward = state.pending.find((r) => r.earnedSessionId === sessionId);
+  if (!reward) return state;
+  return { pending: state.pending.filter((r) => r.earnedSessionId !== sessionId),
+    collected: state.collected.some((r) => r.earnedSessionId === sessionId) ? state.collected : [...state.collected, reward] };
+}
+export function parseRewards(raw: string | null): RewardsState {
+  if (!raw) return emptyRewards;
+  try {
+    const data = JSON.parse(raw);
+    if (!Array.isArray(data.pending) || !Array.isArray(data.collected)) return emptyRewards;
+    const seen = new Set<string>();
+    const normalize = (rows: unknown[]): Collectible[] => rows.flatMap((row) => {
+      if (!row || typeof row !== 'object') return [];
+      const r = row as Partial<Collectible>;
+      if (typeof r.earnedSessionId !== 'string' || typeof r.earnedAt !== 'string' || !subjects.some((s) => s.id === r.subjectId) || seen.has(r.earnedSessionId)) return [];
+      seen.add(r.earnedSessionId);
+      return [makeReward(r.earnedSessionId, r.subjectId as SubjectId, r.earnedAt)];
+    });
+    const collected = normalize(data.collected);
+    return { collected, pending: normalize(data.pending) };
+  } catch { return emptyRewards; }
+}
