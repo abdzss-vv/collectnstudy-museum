@@ -31,7 +31,7 @@ export function FocusMode({ initial, onExit }: { initial: StudySession; onExit: 
       <Leaf className="mx-auto mb-5 text-primary" size={28} />
       <p className="text-xs uppercase text-primary">The reading room</p>
       <h1 className="mt-3 text-3xl">{subjectName(session.subject as SubjectId)}</h1>
-      {session.status === 'done' ? <div className="mt-8"><Check size={36} className="mx-auto text-primary" /><h2 className="mt-4 text-4xl">A moment well spent.</h2><p className="mt-3 text-muted-foreground">Your {session.total / 60}-minute session has ended.</p><p className="mt-1 text-sm text-muted-foreground">No rewards awarded. This session is not saved.</p><GameButton className="mt-7" onClick={onExit}><ArrowLeft size={16} /> Return to museum</GameButton></div> : <>
+      {session.status === 'done' ? <div className="mt-8"><Check size={36} className="mx-auto text-primary" /><h2 className="mt-4 text-4xl">A moment well spent.</h2><p className="mt-3 text-muted-foreground">Your {session.total / 60}-minute session has ended.</p></div> : <>
         <p className="focus-timer" role="timer" aria-label={`${time} remaining`}>{time}</p>
         <progress className="focus-progress" value={session.total - session.remaining} max={session.total} aria-label="Session progress" />
         <p className="mt-5 text-sm text-muted-foreground">{session.status === 'paused' ? 'Take a breath. Your session is paused.' : 'One subject. A little time. Just you.'}</p>
