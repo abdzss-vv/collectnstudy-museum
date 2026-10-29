@@ -6,9 +6,26 @@
 
 /* CollectnStudy design system — warm museum + cozy study palette. */
 
+/* Overused Grotesk: only SemiBold (600) and Bold (700) are supplied; lighter weights fall back to 600. */
+@font-face {
+  font-family: "Overused Grotesk";
+  src: url("/__l5e/assets-v1/92955638-0dde-45f4-a085-8ecb9be87961/OverusedGrotesk-SemiBold.ttf") format("truetype");
+  font-weight: 100 650;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Overused Grotesk";
+  src: url("/__l5e/assets-v1/e4536dcf-8358-4815-ab84-66e9509c35d2/OverusedGrotesk-Bold.ttf") format("truetype");
+  font-weight: 651 900;
+  font-style: normal;
+  font-display: swap;
+}
+
 @theme inline {
-  --font-serif: "Cormorant Garamond", Georgia, serif;
-  --font-sans: "Karla", system-ui, sans-serif;
+  --font-serif: "Overused Grotesk", system-ui, sans-serif;
+  --font-sans: "Overused Grotesk", system-ui, sans-serif;
+  --font-mono: "Overused Grotesk", system-ui, sans-serif;
   --radius-sm: calc(var(--radius) - 4px);
   --radius-md: calc(var(--radius) - 2px);
   --radius-lg: var(--radius);
