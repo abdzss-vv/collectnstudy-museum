@@ -98,6 +98,8 @@
   --museum-glass: oklch(0.985 0.012 85 / 0.94);
   --museum-shadow: 0 8px 30px oklch(0.22 0.035 50 / 0.18);
   --reward-veil: oklch(0.965 0.018 85 / 0.91);
+  --museum-canvas: oklch(1 0 0);
+  --museum-button-shadow: 0 7px 12px oklch(0.3 0.045 145 / 0.18);
 }
 
 @layer base {
@@ -126,7 +128,7 @@
 }
 
 .museum-root { min-height: 100svh; }
-.museum-home { position: relative; min-height: 680px; height: 100svh; overflow: hidden; background: var(--secondary); }
+.museum-home { position: relative; min-height: 100svh; padding: 15px 0 27px; background: var(--museum-canvas); }
 .gallery-viewport { position: absolute; inset: 0; overflow: hidden; }
 .gallery-scene { position: absolute; width: max(100vw, calc(100svh * 1.765)); height: max(100svh, calc(100vw / 1.765)); left: 50%; top: 50%; transform: translate(-50%, -50%); }
 .gallery-background { position: absolute; inset: 0; width: 100%; height: 100%; }
@@ -138,7 +140,25 @@
 .gallery-art-right { left: 61.1%; top: 26.4%; width: 14.3%; height: 15.6%; }
 .gallery-amphora { left: 46.7%; top: 49%; width: 6.5%; height: 17%; border-radius: 50%; }
 .gallery-amphora:hover { box-shadow: none; outline: 2px solid var(--gold); background: var(--gold-soft); opacity: 0.25; }
-.museum-top { position: absolute; top: 26px; left: 30px; right: 30px; display: flex; justify-content: space-between; align-items: start; gap: 12px; }
+.museum-top { height: 105px; }
+.museum-logo { display: block; width: 401px; max-width: 100%; height: auto; }
+.museum-composition { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 588px) minmax(0, 1fr); align-items: center; margin-top: -75px; }
+.miniature-museum { position: relative; grid-column: 2; width: 100%; max-width: min(588px, calc((100svh - 166px) * 0.9767)); justify-self: center; aspect-ratio: 588 / 602; }
+.miniature-museum-image { display: block; width: 100%; height: auto; }
+.miniature-exhibits { position: absolute; inset: 0; pointer-events: none; }
+.miniature-exhibit { position: absolute; pointer-events: auto; padding: 0; border-radius: 2px; background: transparent; border: 1px solid transparent; }
+.miniature-exhibit:hover, .miniature-exhibit:focus-visible { background: color-mix(in oklab, var(--gold-soft) 20%, transparent); border-color: var(--gold); }
+.miniature-exhibit-left { left: 24%; top: 30%; width: 9%; height: 17%; }
+.miniature-exhibit-centre { left: 58%; top: 23%; width: 9%; height: 18%; }
+.miniature-exhibit-right { left: 77%; top: 32%; width: 9%; height: 17%; }
+.miniature-exhibit-amphora { left: 46%; top: 58%; width: 8%; height: 12%; }
+.museum-art-button { display: block; padding: 0; border: none; border-radius: 0; background: transparent; transition: transform 180ms ease, filter 180ms ease; }
+.museum-art-button img { display: block; width: 100%; height: auto; }
+.museum-art-button:hover { background: transparent; }
+@media (hover: hover) {
+  .museum-art-button:hover { transform: scale(1.05); filter: drop-shadow(var(--museum-button-shadow)); }
+}
+.museum-art-button:active { transform: scale(0.97); filter: none; }
 .museum-brand { display: flex; gap: 12px; align-items: center; background: var(--museum-glass); padding: 12px 18px; border: 1px solid var(--gold); border-radius: 6px; box-shadow: var(--museum-shadow); color: var(--primary); }
 .museum-brand h1 { font-size: 27px; line-height: 1; }
 .museum-brand h1 span { color: var(--gold); }
@@ -146,12 +166,12 @@
 .museum-currency { display: flex; align-items: center; gap: 9px; background: var(--museum-glass); padding: 11px 16px; border: 1px solid var(--gold); border-radius: 6px; box-shadow: var(--museum-shadow); color: var(--primary); font-weight: 600; }
 .museum-room-label { position: absolute; top: 115px; width: 100%; display: flex; justify-content: center; align-items: center; gap: 14px; color: var(--wood); font-family: var(--font-serif); font-size: 21px; }
 .room-line { width: 36px; height: 1px; background: var(--wood); opacity: .5; }
-.museum-tools { position: absolute; right: 28px; top: 50%; transform: translateY(-50%); display: flex; flex-direction: column; gap: 10px; }
-.museum-tools button { width: 58px; height: 58px; padding: 9px 0; flex-direction: column; gap: 4px; background: var(--museum-glass); border-color: var(--gold); box-shadow: var(--museum-shadow); color: var(--primary); }
+.museum-tools { grid-column: 3; justify-self: end; margin-right: 4.1vw; margin-top: 180px; display: flex; flex-direction: column; gap: 6px; }
+.museum-tools button { width: 87px; height: 86px; }
 .museum-tools span { font-size: 9px; }
-.museum-bottom { position: absolute; bottom: 28px; left: 0; right: 0; display: flex; flex-direction: column; align-items: center; gap: 12px; }
+.museum-bottom { display: flex; justify-content: center; margin-top: 11px; }
 .gallery-caption { display: flex; align-items: center; gap: 8px; padding: 6px 12px; border-radius: 4px; background: var(--museum-glass); font-size: 11px; color: var(--primary); }
-.begin-study { height: 58px; min-width: 268px; border: 1px solid var(--gold); outline: 1px solid var(--primary); outline-offset: 3px; box-shadow: var(--museum-shadow); font-family: var(--font-serif); font-size: 24px; }
+.begin-study { width: 330px; max-width: calc(100% - 40px); }
 .museum-bottom-note { color: var(--wood); font-size: 12px; background: var(--museum-glass); padding: 3px 9px; border-radius: 3px; }
 .museum-scrim { position: fixed; inset: 0; z-index: 50; background: var(--scrim); backdrop-filter: blur(2px); }
 .museum-panel { position: fixed; right: 24px; top: 24px; bottom: 24px; z-index: 51; width: min(760px, calc(100vw - 48px)); border: 1px solid var(--gold); border-radius: 8px; background: var(--card); box-shadow: var(--museum-shadow); display: flex; flex-direction: column; animation: panel-arrive 180ms ease-out; }
@@ -200,11 +220,14 @@
 @keyframes gallery-breathe { 50% { filter: brightness(1.035); } }
 .museum-home:not(.museum-still) .gallery-background { animation: gallery-breathe 12s ease-in-out infinite; }
 @media (max-width: 700px) {
-  .museum-home { min-height: 600px; }
+  .museum-home { padding: 12px 16px 24px; }
   .gallery-viewport { overflow-x: auto; scrollbar-width: none; }
   .gallery-viewport::-webkit-scrollbar { display: none; }
   .gallery-scene { position: relative; left: 0; top: 0; transform: none; width: max(830px, calc(100svh * 1.765)); height: max(470px, 100svh); }
-  .museum-top { top: 16px; left: 16px; right: 16px; }
+  .museum-top { height: auto; }
+  .museum-logo { width: 300px; }
+  .museum-composition { grid-template-columns: minmax(0, 1fr); gap: 16px; margin-top: 12px; }
+  .miniature-museum { grid-column: 1; max-width: 500px; }
   .museum-brand { padding: 10px 12px; gap: 8px; }
   .museum-brand h1 { font-size: 22px; }
   .museum-brand > svg { display: none; }
@@ -212,9 +235,9 @@
   .museum-currency { padding: 9px 12px; }
   .museum-currency > span:last-child { display: none; }
   .museum-room-label { top: 102px; font-size: 18px; }
-  .museum-tools { top: auto; bottom: 162px; right: 50%; transform: translateX(50%); flex-direction: row; gap: 9px; }
-  .museum-tools button { width: 56px; height: 54px; }
-  .museum-bottom { bottom: 22px; gap: 11px; }
+  .museum-tools { grid-column: 1; justify-self: center; margin: 0; flex-direction: row; gap: 8px; }
+  .museum-tools button { width: 64px; height: 64px; }
+  .museum-bottom { margin-top: 22px; }
   .museum-bottom-note { font-size: 10px; }
   .museum-panel { right: 8px; top: 12px; bottom: 12px; width: calc(100vw - 16px); }
   .museum-panel-compact { right: 50%; top: 50%; bottom: auto; width: calc(100vw - 24px); }
@@ -225,6 +248,12 @@
   .focus-top > span { font-size: 20px; }
   .focus-content { background: var(--museum-glass); border-radius: 8px; margin-top: 16svh; }
   .focus-timer { font-size: 86px; }
+}
+@media (min-width: 701px) and (max-width: 1000px) {
+  .museum-logo { width: 320px; }
+  .museum-composition { grid-template-columns: minmax(20px, 1fr) minmax(0, 560px) minmax(104px, 1fr); margin-top: -45px; }
+  .museum-tools { margin-right: 16px; margin-top: 90px; }
+  .museum-tools button { width: 72px; height: 72px; }
 }
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { animation: none !important; transition: none !important; }

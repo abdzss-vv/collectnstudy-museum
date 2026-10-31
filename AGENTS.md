@@ -17,3 +17,4 @@
 - FocusMode and StudySelector share pure timestamp-based session logic in study-session — keeps countdown accurate after inactive tabs and makes pause/completion testable.
 - RewardsProvider owns pending and collected local rewards; pure rewards-store transitions deduplicate by session ID, and the global reveal survives navigation — keeps natural completion, confirmation and refresh recovery consistent across study entry points.
 - Artwork reveal uses supplied PNG faces and one continuous CSS Y-axis rotation for opening and clicking — preserves physical two-sided rendering without resetting the angle after the reveal.
+- MuseumScene renders user artwork as a proportional image in the home layout with container-relative exhibit hit areas; MuseumHome retains all panel/session state and custom artwork controls — keeps visual composition independent of viewport positioning and existing behavior.

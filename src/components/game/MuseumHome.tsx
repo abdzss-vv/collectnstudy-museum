@@ -1,7 +1,12 @@
-import { useEffect, useRef, useState } from 'react';
-import { BookOpen, Library, CalendarDays, Sprout, Settings, Coins, ArrowRight, Sun, VolumeX } from 'lucide-react';
-import museumInterior from '@/assets/museum-interior.jpg';
-import { museumDisplays, sampleCollectibles, sampleStats, subjectName } from '@/data/sample';
+import { useState } from 'react';
+import { Sprout, VolumeX } from 'lucide-react';
+import museumLogo from '@/assets/museum-logo.png.asset.json';
+import collectionButton from '@/assets/museum-collection.png.asset.json';
+import testsButton from '@/assets/museum-tests.png.asset.json';
+import progressButton from '@/assets/museum-progress.png.asset.json';
+import settingsButton from '@/assets/museum-settings.png.asset.json';
+import beginButton from '@/assets/museum-begin-session.png.asset.json';
+import { subjectName } from '@/data/sample';
 import type { Collectible } from '@/data/types';
 import type { StudySession } from '@/lib/study-session';
 import { CollectionContent } from './CollectionContent';
@@ -11,6 +16,7 @@ import { FocusMode } from './FocusMode';
 import { StudySelector } from './StudySelector';
 import { GameButton, SampleBadge } from './ui';
 import { useRewards } from './RewardsProvider';
+import { MuseumScene } from './MuseumScene';
 
 type Panel = 'collection' | 'tests' | 'progress' | 'settings' | 'study' | null;
 export function MuseumHome() {
@@ -19,29 +25,20 @@ export function MuseumHome() {
   const [selected, setSelected] = useState<Collectible | null>(null);
   const [session, setSession] = useState<StudySession | null>(null);
   const [motion, setMotion] = useState(true);
-  const galleryRef = useRef<HTMLDivElement>(null);
-  useEffect(() => {
-    const gallery = galleryRef.current;
-    if (gallery) gallery.scrollLeft = (gallery.scrollWidth - gallery.clientWidth) / 2;
-  }, []);
   return <div className={`museum-home ${motion ? '' : 'museum-still'}`}>
-    <div ref={galleryRef} className="gallery-viewport" tabIndex={0} aria-label="Museum gallery"><div className="gallery-scene">
-      <img src={museumInterior} alt="Sunlit museum with cream walls, oak floors, plants and ornate golden frames" className="gallery-background" width={1920} height={1088} />
-      {museumDisplays.map(({ item, position }) => item && <GameButton key={item.id} variant="ghost" className={`gallery-art gallery-art-${position}`} aria-label={`Inspect ${item.name}`} title={item.name} onClick={() => setSelected(item)}><img src={item.image} alt={item.name} width={600} height={400} /></GameButton>)}
-      <GameButton variant="ghost" className="gallery-art gallery-amphora" aria-label="Inspect Black-Figure Amphora" title="Black-Figure Amphora" onClick={() => setSelected(sampleCollectibles[2] ?? null)} />
-    </div></div>
     <header className="museum-top">
-      <div className="museum-brand"><Library size={22} /><div><h1>Collect<span>n</span>Study</h1><p>A little museum of your own</p></div></div>
-      <div className="museum-currency" title="Demonstration currency; economy not active"><Coins size={18} /><span>{sampleStats.coins}</span><span className="text-xs text-muted-foreground">coins</span></div>
+      <h1><img className="museum-logo" src={museumLogo.url} alt="Study Museum" width={401} height={105} /></h1>
     </header>
-    <div className="museum-room-label"><span className="room-line" /><p>The sunlit gallery</p><span className="room-line" /></div>
+    <div className="museum-composition">
+    <MuseumScene onInspect={setSelected} />
     <nav className="museum-tools" aria-label="Museum controls">
-      <GameButton variant="outline" title="Collection" onClick={() => setPanel('collection')}><Library size={20} /><span>Collection</span></GameButton>
-      <GameButton variant="outline" title="Tests" onClick={() => setPanel('tests')}><CalendarDays size={20} /><span>Tests</span></GameButton>
-      <GameButton variant="outline" title="Museum progress" onClick={() => setPanel('progress')}><Sprout size={20} /><span>Progress</span></GameButton>
-      <GameButton variant="outline" title="Settings" onClick={() => setPanel('settings')}><Settings size={20} /><span>Settings</span></GameButton>
+      <GameButton variant="ghost" className="museum-art-button" aria-label="Collection" title="Collection" onClick={() => setPanel('collection')}><img src={collectionButton.url} alt="" width={87} height={86} /></GameButton>
+      <GameButton variant="ghost" className="museum-art-button" aria-label="Tests" title="Tests" onClick={() => setPanel('tests')}><img src={testsButton.url} alt="" width={87} height={86} /></GameButton>
+      <GameButton variant="ghost" className="museum-art-button" aria-label="Museum progress" title="Museum progress" onClick={() => setPanel('progress')}><img src={progressButton.url} alt="" width={87} height={87} /></GameButton>
+      <GameButton variant="ghost" className="museum-art-button" aria-label="Settings" title="Settings" onClick={() => setPanel('settings')}><img src={settingsButton.url} alt="" width={87} height={84} /></GameButton>
     </nav>
-    <div className="museum-bottom"><div className="gallery-caption"><Sun size={14} /><span>Main hall</span><span className="caption-dot">·</span><span>Demonstration displays</span></div><GameButton className="begin-study" onClick={() => setPanel('study')}><BookOpen size={21} /> Begin Studying <ArrowRight size={18} /></GameButton><p className="museum-bottom-note">A quiet moment today. A growing collection tomorrow.</p></div>
+    </div>
+    <div className="museum-bottom"><GameButton variant="ghost" className="museum-art-button begin-study" aria-label="Begin Session" onClick={() => setPanel('study')}><img src={beginButton.url} alt="" width={330} height={83} /></GameButton></div>
     <MuseumPanel open={panel !== null} onClose={() => setPanel(null)} title={panel === 'collection' ? 'Your collection' : panel === 'tests' ? 'Upcoming tests' : panel === 'progress' ? 'Museum journal' : panel === 'settings' ? 'Settings' : 'Settle in to study'} description="Museum panel. Close to return to the gallery." compact={panel === 'study' || panel === 'settings' || panel === 'progress'}>
       {panel === 'collection' && <CollectionContent />}
       {panel === 'tests' && <TestsContent />}
