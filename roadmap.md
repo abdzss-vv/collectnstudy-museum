@@ -1,5 +1,5 @@
-# Study rewards
-- [x] Extend the existing timer with synchronized 1–180 minute controls and validation.
-- [x] Add natural-completion box reveal and reference-matched interactive artwork card.
-- [x] Persist pending and confirmed rewards locally, preserving subject and preventing duplicate claims.
-- [x] Verify timer, reveal, collection, refresh and existing navigation/tests.
+# Custom museum appearance
+- [x] Extract supplied logo, museum and button artwork without replacing user designs.
+- [x] Integrate a layout-centered independent MuseumScene while retaining existing handlers and state.
+- [ ] Compare desktop/mobile, resized and zoomed layouts with the reference.
+- [ ] Verify navigation, exhibits, study/rewards, collection and saved tests without changing their logic.
