@@ -1,8 +1,8 @@
-# CollectnStudy
+# Study Museum
 
-# CollectnStudy — Initial Prototype
+# Study Museum — Initial Prototype
 
-Build the initial prototype of a browser-based study and museum management game called **CollectnStudy**.
+Build the initial prototype of a browser-based study and museum management game called **Study Museum**.
 
 ## 1. Core concept
 
