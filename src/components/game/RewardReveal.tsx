@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { Check, Gift, SkipForward } from 'lucide-react';
 import rewardBox from '@/assets/reward-box.png';
 import cardFront from '@/assets/reward-card-front.png.asset.json';
@@ -12,23 +12,31 @@ import { useRewards } from './RewardsProvider';
 export function RewardReveal() {
   const { state, confirm, error } = useRewards();
   const reward = state.pending[0];
-  const [stage, setStage] = useState<'box' | 'opening' | 'card'>('box');
+  const [stage, setStage] = useState<'box' | 'card'>('box');
   const [flipped, setFlipped] = useState(false);
   const [spinning, setSpinning] = useState(false);
+  const [rotation, setRotation] = useState(0);
+  const cardRef = useRef<HTMLDivElement>(null);
   const [saveError, setSaveError] = useState('');
-  useEffect(() => { setStage('box'); setFlipped(false); setSpinning(false); setSaveError(''); }, [reward?.id]);
+  useEffect(() => { setStage('box'); setFlipped(false); setSpinning(false); setRotation(0); setSaveError(''); }, [reward?.id]);
   useEffect(() => {
-    if (stage !== 'opening') return;
-    const id = window.setTimeout(() => setStage('card'), 1000);
-    return () => window.clearTimeout(id);
-  }, [stage]);
-  useEffect(() => {
-    if (stage !== 'card') return;
-    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
-    setSpinning(true);
-    const id = window.setTimeout(() => setSpinning(false), 1100);
-    return () => window.clearTimeout(id);
-  }, [stage]);
+    if (stage !== 'card' || !spinning) return;
+    let cancelled = false;
+    let frame = 0;
+    const images = Array.from(cardRef.current?.querySelectorAll('img') ?? []);
+    // Decode both faces before turning so the reverse never appears blank.
+    Promise.all(images.map((image) => image.decode().catch(() => undefined))).then(() => {
+      if (cancelled) return;
+      frame = window.requestAnimationFrame(() => {
+        frame = window.requestAnimationFrame(() => { if (!cancelled) setRotation(360); });
+      });
+    });
+    return () => { cancelled = true; window.cancelAnimationFrame(frame); };
+  }, [stage, spinning]);
+  const openBox = () => {
+    setSpinning(!window.matchMedia('(prefers-reduced-motion: reduce)').matches);
+    setStage('card');
+  };
   if (!reward) return null;
   return <section className="reward-screen" role="dialog" aria-modal="true" aria-label="Study collectible reward">
     <img src={studyRoom} className="focus-scenery" alt="" width={1920} height={1088} />
@@ -36,11 +44,11 @@ export function RewardReveal() {
       <p className="text-sm font-semibold text-primary">Study complete · {subjectName(reward.subjectId)}</p>
       <h1 className="mt-2 text-4xl">A new piece of history.</h1>
       {stage !== 'card' ? <>
-        <GameButton autoFocus variant="ghost" className={`reward-box ${stage === 'opening' ? 'reward-box-opening' : ''}`} aria-label="Open collectible box" disabled={stage === 'opening'} onClick={() => setStage(window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'card' : 'opening')}><img src={rewardBox} alt="Illustrated oak collectible box with brass fittings and a green ribbon" width={1024} height={1024} /></GameButton>
-        <div className="flex flex-wrap justify-center gap-3"><GameButton disabled={stage === 'opening'} onClick={() => setStage('opening')}><Gift size={17} /> Open box</GameButton><GameButton variant="outline" onClick={() => setStage('card')}><SkipForward size={17} /> Skip animation</GameButton></div>
+        <GameButton autoFocus variant="ghost" className="reward-box" aria-label="Open collectible box" onClick={openBox}><img src={rewardBox} alt="Illustrated oak collectible box with brass fittings and a green ribbon" width={1024} height={1024} /></GameButton>
+        <div className="flex flex-wrap justify-center gap-3"><GameButton onClick={openBox}><Gift size={17} /> Open box</GameButton><GameButton variant="outline" onClick={() => setStage('card')}><SkipForward size={17} /> Skip animation</GameButton></div>
       </> : <>
-        <GameButton variant="ghost" aria-label={spinning ? 'Revealing collectible card' : flipped ? 'Show painting' : 'Flip card'} aria-pressed={spinning ? undefined : flipped} disabled={spinning} className={`artwork-card ${flipped ? 'artwork-card-flipped' : ''} ${spinning ? 'artwork-card-spin' : ''}`} onClick={() => setFlipped((v) => !v)}>
-          <div className="artwork-card-inner">
+        <GameButton variant="ghost" aria-label={spinning ? 'Revealing collectible card' : flipped ? 'Show painting' : 'Flip card'} aria-pressed={spinning ? undefined : flipped} disabled={spinning} className={`artwork-card ${spinning ? 'artwork-card-spin' : ''}`} onClick={() => { setFlipped((v) => !v); setRotation((v) => v + 180); }}>
+          <div ref={cardRef} className="artwork-card-inner" style={{ transform: `rotateY(${rotation}deg)` }} onTransitionEnd={(event) => { if (event.target === event.currentTarget && event.propertyName === 'transform') setSpinning(false); }}>
             <div className="artwork-card-face" aria-hidden={flipped}><img src={cardFront.url} alt="Mona Lisa artwork card, supplied high-resolution design" width={723} height={1023} /></div>
             <div className="artwork-card-face artwork-card-back" aria-hidden={!flipped}><img src={cardBack.url} alt={`Mona Lisa. Painted by ${monaLisaDetails.artist}, ${monaLisaDetails.date}. ${monaLisaDetails.fact}`} width={723} height={1023} /></div>
           </div>
